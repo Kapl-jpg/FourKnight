@@ -1,17 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Ivan\.Rider2019.3\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\Ivan\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Serious Knight.-1828146517.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Ivan\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Ivan\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_Serious Knight.-1828146517.00" t="ExcludeRecursive" />
     <e p="D:\UnityHub\2019.3.3f1\Serious Knight" t="IncludeRecursive">
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
+        <e p="Bonus" t="Include">
+          <e p="BonusTranslate.cs" t="Include" />
+        </e>
         <e p="Camera.cs" t="Include" />
-        <e p="Knight" t="Include">
+        <e p="Characters" t="Include">
+          <e p="ChoseKnight.cs" t="Include" />
+          <e p="Health and Armor" t="Include">
+            <e p="HealthAndArmor.cs" t="Include" />
+          </e>
+          <e p="KnightAnimation.cs" t="Include" />
           <e p="KnightController.cs" t="Include" />
         </e>
-        <e p="Zombie" t="Include">
-          <e p="ZombieController.cs" t="Include" />
+        <e p="Collider.cs" t="Include" />
+        <e p="ControllButtons" t="Include">
+          <e p="ButtonControl.cs" t="Include" />
+        </e>
+        <e p="Enemy" t="Include">
+          <e p="Zombie" t="Include">
+            <e p="ZombieController.cs" t="Include" />
+          </e>
+        </e>
+        <e p="GameMenu" t="Include">
+          <e p="GameMenu.cs" t="Include" />
+        </e>
+        <e p="Managers" t="Include">
+          <e p="EnemyManager.cs" t="Include" />
+          <e p="GeneralInformation.cs" t="Include" />
+          <e p="SaveLoad.cs" t="Include" />
+          <e p="ScoreManager.cs" t="Include" />
+          <e p="Singleton.cs" t="Include" />
+        </e>
+        <e p="StartScene" t="Include">
+          <e p="NextScene.cs" t="Include" />
+          <e p="StartGame.cs" t="Include" />
+        </e>
+        <e p="Traps" t="Include">
+          <e p="gunpowder" t="Include">
+            <e p="GunPowder.cs" t="Include" />
+          </e>
+          <e p="Thorns" t="Include">
+            <e p="Thorns.cs" t="Include" />
+          </e>
         </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />
