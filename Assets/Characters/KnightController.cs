@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class KnightController : MonoBehaviour
 {
@@ -25,14 +26,59 @@ public class KnightController : MonoBehaviour
     [SerializeField] private int quantityHealth;
     [SerializeField] private int quantityArmor;
     private GameObject[] _ground;
+    private Text _activeMarkText;
+
+    public Text ActiveMarkText
+    {
+        get => _activeMarkText;
+        set => _activeMarkText = value;
+    }
+    private GameObject _dialog;
+
+    public GameObject Dialog
+    {
+        get => _dialog;
+        set => _dialog = value;
+    }
     private GameObject _theExclamationMark;
+
+    public GameObject TheExclamationMark
+    {
+        get => _theExclamationMark;
+        set => _theExclamationMark = value;
+    }
     private float _speed;
+
+    public float Speed
+    {
+        get => _speed;
+        set => _speed = value;
+    }
     private float _force;
+
+    public float Force
+    {
+        get => _force;
+        set => _force = value;
+    }
     private float _secondsToWaitAnimation;
+
+    public float SecondsToWaitAnimation
+    {
+        get => _secondsToWaitAnimation;
+        set => _secondsToWaitAnimation = value;
+    }
+    
+    private float _speedStair;
+
+    public float SpeedStair
+    {
+        get => _speedStair;
+        set => _speedStair = value;
+    }
     private bool _stayGround;
     private float _timerToNewAttack;
     private float _timerWait;
-    private float _speedStair;
     private int _numberJump;
     private bool _attackButton;
     private bool _stayStair;
@@ -42,6 +88,8 @@ public class KnightController : MonoBehaviour
     private bool _afk;
     private int _myNumber;
     private Vector2 _collider;
+
+    private GameObject _portal;
 
     public int MyNumber
     {
@@ -62,6 +110,8 @@ public class KnightController : MonoBehaviour
         get => _trigger;
         set => _trigger = value;
     }
+
+    private bool _stayPortal;
 
 
     //Компоненты персонажа ***
@@ -107,6 +157,7 @@ public class KnightController : MonoBehaviour
     }
 
     private CompositeCollider2D _transparentOverlapComposite;
+    
     private GameObject _transparentOverlap;
 
     public GameObject TransparentOverlap
@@ -127,6 +178,7 @@ public class KnightController : MonoBehaviour
 
     private void GetComponents()
     {
+        _portal = _generalInformation.Portal;
         _transparentOverlap = _generalInformation.TransparentOverlap;
         _transparentOverlapComposite = _transparentOverlap.GetComponent<CompositeCollider2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
@@ -141,10 +193,6 @@ public class KnightController : MonoBehaviour
 
     private void GetParameters()
     {
-        _speedStair = _generalInformation.SpeedStairs;
-        _speed = _generalInformation.Speed;
-        _force = _generalInformation.Force;
-        _secondsToWaitAnimation = _generalInformation.SecondsToWaitAnimation;
         _stairs = _generalInformation.Stair;
         TransparentOverlap = _generalInformation.TransparentOverlap;
         _ground = _generalInformation.Ground;
@@ -174,8 +222,9 @@ public class KnightController : MonoBehaviour
         _knightAnimation.AttackButton = _attackButton;
         if (!_afk)
         {
-            ActiveMark();
+            ActiveMark(_stayStair || _trigger || _stayPortal);
             ClimbingTheStairs();
+            Portal();
             Controlling();
         }
         else
@@ -266,6 +315,17 @@ public class KnightController : MonoBehaviour
         }
     }
 
+    void Portal()
+    {
+        if (_stayPortal)
+        {
+            if (_clickMark)
+            {
+                SceneManager.LoadScene("Parts");
+            }
+        }
+    }
+
     void ClimbingTheStairs()
     {
         if (_stayStair)
@@ -323,14 +383,30 @@ public class KnightController : MonoBehaviour
         }
     }
 
-    void ActiveMark()
+    void ActiveMark(bool active)
     {
-        if (_stayStair || _trigger)
+        if (active)
         {
+            _dialog.SetActive(true);
+            if (_stairs)
+            {
+                _activeMarkText.text = _generalInformation.StairText;
+            }
+
+            if (_trigger)
+            {
+                _activeMarkText.text = _generalInformation.ChoseKnightText;
+            }
+
+            if (_stayPortal)
+            {
+                _activeMarkText.text = _generalInformation.PortalText;
+            }
             _theExclamationMark.SetActive(true);
         }
         else
         {
+            _dialog.SetActive(false);
             _theExclamationMark.SetActive(false);
         }
     }
@@ -370,6 +446,11 @@ public class KnightController : MonoBehaviour
         {
             _stayStair = true;
         }
+
+        if (other.gameObject == _portal)
+        {
+            _stayPortal = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -377,6 +458,10 @@ public class KnightController : MonoBehaviour
         if (other.gameObject == Stairs)
         {
             _stayStair = false;
+        }
+        if (other.gameObject == _portal)
+        {
+            _stayPortal = false;
         }
     }
 }

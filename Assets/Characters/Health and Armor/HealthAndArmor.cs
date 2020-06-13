@@ -9,6 +9,7 @@ public class HealthAndArmor : MonoBehaviour
     [SerializeField] private float scale;
     [SerializeField] private float interval;
     [SerializeField] private Vector2 offset;
+
     [Header("Health image parameters")] [SerializeField]
     private Image healthImage;
 
@@ -30,15 +31,17 @@ public class HealthAndArmor : MonoBehaviour
     private readonly List<Image> _healthPool = new List<Image>();
     private readonly List<Image> _armorPool = new List<Image>();
 
-    
+
     private void Start()
     {
         for (int i = _armorPool.Count; i < indicators; i++)
         {
             _armorPool.Add(Instantiate(armorImage));
             _armorPool[i].transform.SetParent(armorParent.transform);
-            _armorPool[i].rectTransform.anchorMax = new Vector2(maxAnchorsXArmor + interval * i + offset.x, maxAnchorsYArmor+offset.y);
-            _armorPool[i].rectTransform.anchorMin = new Vector2(minAnchorsXArmor + interval * i+offset.x, minAnchorsYArmor+offset.y);
+            _armorPool[i].rectTransform.anchorMax =
+                new Vector2(maxAnchorsXArmor + interval * i + offset.x, maxAnchorsYArmor + offset.y);
+            _armorPool[i].rectTransform.anchorMin =
+                new Vector2(minAnchorsXArmor + interval * i + offset.x, minAnchorsYArmor + offset.y);
             _armorPool[i].rectTransform.offsetMax = new Vector2(0, 0);
             _armorPool[i].rectTransform.offsetMin = new Vector2(0, 0);
             _armorPool[i].rectTransform.anchoredPosition3D = Vector3.zero;
@@ -51,9 +54,9 @@ public class HealthAndArmor : MonoBehaviour
             _healthPool.Add(Instantiate(healthImage));
             _healthPool[i].transform.SetParent(healthParent.transform);
             _healthPool[i].rectTransform.anchorMax =
-                new Vector2(maxAnchorsXHealth + interval * i+offset.x, maxAnchorsYHealth + offset.y);
+                new Vector2(maxAnchorsXHealth + interval * i + offset.x, maxAnchorsYHealth + offset.y);
             _healthPool[i].rectTransform.anchorMin =
-                new Vector2(minAnchorsXHealth + interval * i +offset.x, minAnchorsYHealth+offset.y);
+                new Vector2(minAnchorsXHealth + interval * i + offset.x, minAnchorsYHealth + offset.y);
             _healthPool[i].rectTransform.offsetMax = new Vector2(0, 0);
             _healthPool[i].rectTransform.offsetMin = new Vector2(0, 0);
             _healthPool[i].rectTransform.anchoredPosition3D = Vector3.zero;

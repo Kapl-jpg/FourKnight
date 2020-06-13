@@ -1,44 +1,25 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class GeneralInformation : MonoBehaviour
 {
-    [Header("Parameters characters")] [SerializeField] private float speed;
+    private GameObject _dontDestroyManager;
 
-    public float Speed
+    public GameObject DontDestroyManager
     {
-        get => speed;
-        set => speed = value;
+        get => _dontDestroyManager;
+        set => _dontDestroyManager = value;
     }
 
-    [SerializeField] private float speedStairs;
+    [Header("Parameters characters")] [SerializeField]
 
-    public float SpeedStairs
-    {
-        get => speedStairs;
-        set => speedStairs = value;
-    }
-    [SerializeField] private float force;
-
-    public float Force
-    {
-        get => force;
-        set => force = value;
-    }
-    [SerializeField] private float secondsToWaitAnimation;
-
-    public float SecondsToWaitAnimation
-    {
-        get => secondsToWaitAnimation;
-        set => secondsToWaitAnimation = value;
-    }
-    
     private SaveLoad _saveLoad;
 
     public SaveLoad SaveLoad
     {
         get => _saveLoad;
-        set => _saveLoad = value;
     }
+
     //Скрипт ведения очков
     private ScoreManager _scoreManager;
 
@@ -47,14 +28,15 @@ public class GeneralInformation : MonoBehaviour
         get => _scoreManager;
         set => _scoreManager = value;
     }
+
     //Скрипт кнопок управления персонажем
     private ButtonControl _buttonControl;
 
     public ButtonControl ButtonControl
     {
         get => _buttonControl;
-        set => _buttonControl = value;
     }
+
     //Скрипт управления персонажем
     private KnightController _knightController;
 
@@ -63,46 +45,41 @@ public class GeneralInformation : MonoBehaviour
         get => _knightController;
         set => _knightController = value;
     }
+
     //Скрипт выбора персонажа
     private ChoseKnight _choseKnight;
 
-    public ChoseKnight ChoseKnight
-    {
-        get => _choseKnight;
-        set => _choseKnight = value;
-    }
     //Скрипт, который отслеживает жизни и броню
     private HealthAndArmor _healthAndArmor;
 
-    public HealthAndArmor HealthAndArmor
-    {
-        get => _healthAndArmor;
-        set => _healthAndArmor = value;
-    }
     //Скрипт камеры
     private CameraTranslate _cameraTranslate;
 
     public CameraTranslate CameraTranslate
     {
         get => _cameraTranslate;
-        set => _cameraTranslate = value;
     }
-    [Header("Get game objects")]
-    
-    [SerializeField] private GameObject mainCamera;
+
+    [Header("Get game objects")] [SerializeField]
+    private GameObject mainCamera;
 
     public GameObject MainCamera
     {
         get => mainCamera;
-        set => mainCamera = value;
     }
 
+    [SerializeField] private GameObject portal;
+
+    public GameObject Portal
+    {
+        get => portal;
+        set => portal = value;
+    }
     [SerializeField] private GameObject[] ground;
 
     public GameObject[] Ground
     {
         get => ground;
-        set => ground = value;
     }
 
     [SerializeField] private GameObject stair;
@@ -110,7 +87,6 @@ public class GeneralInformation : MonoBehaviour
     public GameObject Stair
     {
         get => stair;
-        set => stair = value;
     }
 
     [SerializeField] private GameObject theExclamationMark;
@@ -118,7 +94,6 @@ public class GeneralInformation : MonoBehaviour
     public GameObject TheExclamationMark
     {
         get => theExclamationMark;
-        set => theExclamationMark = value;
     }
 
     [SerializeField] private GameObject transparentOverlap;
@@ -126,9 +101,8 @@ public class GeneralInformation : MonoBehaviour
     public GameObject TransparentOverlap
     {
         get => transparentOverlap;
-        set => transparentOverlap = value;
     }
-    
+
     private GameObject _activeKnight;
 
     public GameObject ActiveKnight
@@ -136,6 +110,28 @@ public class GeneralInformation : MonoBehaviour
         get => _activeKnight;
         set => _activeKnight = value;
     }
+
+    [SerializeField] private string stairText;
+
+    public string StairText
+    {
+        get => stairText;
+    }
+
+    [SerializeField] private string choseKnightText;
+
+    public string ChoseKnightText
+    {
+        get => choseKnightText;
+    }
+
+    [SerializeField] private string portalText;
+
+    public string PortalText
+    {
+        get => portalText;
+    }
+
     private void Awake()
     {
         _cameraTranslate = mainCamera.GetComponent<CameraTranslate>();
@@ -143,7 +139,9 @@ public class GeneralInformation : MonoBehaviour
         _saveLoad.CameraTranslate = _cameraTranslate;
         _saveLoad.Camera = MainCamera.GetComponent<Camera>();
         _cameraTranslate.GeneralInformation = this;
-        _healthAndArmor = gameObject.GetComponent<HealthAndArmor>();
+        _dontDestroyManager = GameObject.FindGameObjectWithTag("MainManager");
+        _dontDestroyManager.GetComponent<ParametersAndGameObjects>().GeneralInformation = this;
+        _healthAndArmor = _dontDestroyManager.GetComponent<HealthAndArmor>();
         _scoreManager = gameObject.GetComponent<ScoreManager>();
         _choseKnight = gameObject.GetComponent<ChoseKnight>();
         _buttonControl = gameObject.GetComponent<ButtonControl>();

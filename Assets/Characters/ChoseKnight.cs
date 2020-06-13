@@ -8,11 +8,12 @@ public class ChoseKnight : MonoBehaviour
     private GeneralInformation _generalInformation;
     private int _numberKnight;
     [SerializeField] private float targetRange;
+    [SerializeField] private bool createAfkKnights;
     [SerializeField] private Transform spawnPositionMainKnight;
     [SerializeField] private GameObject[] knights;
-
+    private GameObject dontDestroy;
+    
     private GameObject _nearbyKnight;
-
     private List<GameObject> _afkKnights = new List<GameObject>();
 
     private int _activeKnightNumber;
@@ -24,18 +25,23 @@ public class ChoseKnight : MonoBehaviour
     void GetComponents()
     {
         _generalInformation = gameObject.GetComponent<GeneralInformation>();
+        dontDestroy = _generalInformation.DontDestroyManager;
         _numberKnight = _generalInformation.SaveLoad.Number;
     }
 
     void Start()
     {
+
         GetComponents();
-            ChoseTheMainKnight(_numberKnight, spawnPositionMainKnight.transform.position);
+        ChoseTheMainKnight(_numberKnight, spawnPositionMainKnight.transform.position);
+        if (createAfkKnights)
+        {
             for (int i = 0; i < knights.Length; i++)
             {
                 if (i != _numberKnight)
                     NeedAfkKnight(i);
             }
+        }
     }
 
     void NeedAfkKnight(int needKnights)
@@ -62,8 +68,9 @@ public class ChoseKnight : MonoBehaviour
         _generalInformation.KnightController.MyNumber = numberMainCharacter;
         _generalInformation.CameraTranslate.GetTransform();
         _generalInformation.ButtonControl.KnightControl = _generalInformation.KnightController;
-        _generalInformation.KnightController.HealthAndArmor = _generalInformation.HealthAndArmor;
+        _generalInformation.KnightController.HealthAndArmor = dontDestroy.GetComponent<HealthAndArmor>();
         _generalInformation.SaveLoad.Number = numberMainCharacter;
+        dontDestroy.GetComponent<ParametersAndGameObjects>().SetValue();
     }
 
     private void Update()
