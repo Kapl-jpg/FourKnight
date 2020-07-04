@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GeneralInformation : MonoBehaviour
 {
@@ -11,22 +11,13 @@ public class GeneralInformation : MonoBehaviour
         set => _dontDestroyManager = value;
     }
 
-    [Header("Parameters characters")] [SerializeField]
+    [Header("Parameters characters")]
 
     private SaveLoad _saveLoad;
 
     public SaveLoad SaveLoad
     {
         get => _saveLoad;
-    }
-
-    //Скрипт ведения очков
-    private ScoreManager _scoreManager;
-
-    public ScoreManager ScoreManager
-    {
-        get => _scoreManager;
-        set => _scoreManager = value;
     }
 
     //Скрипт кнопок управления персонажем
@@ -45,12 +36,6 @@ public class GeneralInformation : MonoBehaviour
         get => _knightController;
         set => _knightController = value;
     }
-
-    //Скрипт выбора персонажа
-    private ChoseKnight _choseKnight;
-
-    //Скрипт, который отслеживает жизни и броню
-    private HealthAndArmor _healthAndArmor;
 
     //Скрипт камеры
     private CameraTranslate _cameraTranslate;
@@ -75,18 +60,20 @@ public class GeneralInformation : MonoBehaviour
         get => portal;
         set => portal = value;
     }
-    [SerializeField] private GameObject[] ground;
 
-    public GameObject[] Ground
+    private GameObject[] transparentOverlap;
+
+    public GameObject[] TransparentOverlap
+    {
+        get => transparentOverlap;
+        set => transparentOverlap = value;
+    }
+    [SerializeField] private List <GameObject> ground;
+
+    public List<GameObject> Ground
     {
         get => ground;
-    }
-
-    [SerializeField] private GameObject stair;
-
-    public GameObject Stair
-    {
-        get => stair;
+        set => ground = value;
     }
 
     [SerializeField] private GameObject theExclamationMark;
@@ -94,13 +81,6 @@ public class GeneralInformation : MonoBehaviour
     public GameObject TheExclamationMark
     {
         get => theExclamationMark;
-    }
-
-    [SerializeField] private GameObject transparentOverlap;
-
-    public GameObject TransparentOverlap
-    {
-        get => transparentOverlap;
     }
 
     private GameObject _activeKnight;
@@ -132,6 +112,13 @@ public class GeneralInformation : MonoBehaviour
         get => portalText;
     }
 
+    private GameObject[] stairPool;
+
+    public GameObject[] StairPool
+    {
+        get => stairPool;
+        set => stairPool = value;
+    }
     private void Awake()
     {
         _cameraTranslate = mainCamera.GetComponent<CameraTranslate>();
@@ -141,9 +128,6 @@ public class GeneralInformation : MonoBehaviour
         _cameraTranslate.GeneralInformation = this;
         _dontDestroyManager = GameObject.FindGameObjectWithTag("MainManager");
         _dontDestroyManager.GetComponent<ParametersAndGameObjects>().GeneralInformation = this;
-        _healthAndArmor = _dontDestroyManager.GetComponent<HealthAndArmor>();
-        _scoreManager = gameObject.GetComponent<ScoreManager>();
-        _choseKnight = gameObject.GetComponent<ChoseKnight>();
         _buttonControl = gameObject.GetComponent<ButtonControl>();
     }
 }

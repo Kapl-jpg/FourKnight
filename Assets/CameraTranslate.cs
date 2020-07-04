@@ -9,19 +9,17 @@ public class CameraTranslate : MonoBehaviour
         set => _generalInformation = value;
     }
 
-    [SerializeField] private Vector3 offset;
+    private Vector3 _offset;
 
     public Vector3 Offset
     {
-        get => offset;
-        set => offset = value;
+        set => _offset = value;
     }
-    [SerializeField] private float speed;
+    private float _speed;
 
     public float Speed
     {
-        get => speed;
-        set => speed = value;
+        set => _speed = value;
     }
     private float _speedTranslate;
     private Transform _gameObjectTransform;
@@ -38,8 +36,8 @@ public class CameraTranslate : MonoBehaviour
         if (_generalInformation.ActiveKnight != null)
         {
             transform.position = Vector3.MoveTowards(transform.position,
-                _activeKnightTransform.transform.position + offset, _speedTranslate);
-            _speedTranslate = speed * Vector2.Distance(_gameObjectTransform.position, _activeKnightTransform.position);
+                _activeKnightTransform.transform.position + _offset, _speedTranslate);
+            _speedTranslate = _speed * Vector2.Distance(_gameObjectTransform.position, _activeKnightTransform.position);
         }
     }
 }

@@ -1,11 +1,17 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ParametersAndGameObjects : MonoBehaviour
 {
-    [Header("Related to the character")]
+    [Header("Related to the Main camera")] [SerializeField]
+    private CameraTranslate cameraTranslate;
+    
+    [SerializeField]private float cameraSpeed;
+
+    [SerializeField] private Vector3 cameraOffset;
+    
+    [Header("Related to the character")] [SerializeField] 
+    private GameObject[] knights;
     
     private GeneralInformation _generalInformation;
 
@@ -15,8 +21,6 @@ public class ParametersAndGameObjects : MonoBehaviour
     }
 
     private KnightController _knightController;
-    
-    [SerializeField] private GameObject[] knights;
 
     [SerializeField] private GameObject theExclamationMark;
 
@@ -33,6 +37,11 @@ public class ParametersAndGameObjects : MonoBehaviour
     [SerializeField] private float secondsToWaitAnimation;
 
 
+    void Start()
+    {
+        cameraTranslate.Offset = cameraOffset;
+        cameraTranslate.Speed = cameraSpeed;
+    }
     public void SetValue()
     {
         _knightController = _generalInformation.ActiveKnight.GetComponent<KnightController>();

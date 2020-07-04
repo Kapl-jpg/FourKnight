@@ -4541,8 +4541,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fac1a202ecc4614aa5bcd6fb7c5eb12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0, y: 0.4, z: -10}
-  speed: 0.01
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -4624,7 +4622,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550739219}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.27, y: -0.52, z: 0}
+  m_LocalPosition: {x: 0.171, y: -0.526, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -13144,7 +13142,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1500176659}
-  - component: {fileID: 1500176658}
   - component: {fileID: 1500176660}
   - component: {fileID: 1500176661}
   m_Layer: 0
@@ -13154,18 +13151,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1500176658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1500176657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a454b64a861b62448a98d9d3173ecd85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1500176659
 Transform:
   m_ObjectHideFlags: 0
@@ -13196,6 +13181,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec03014efcd4128409aeb52bcefa3f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraTranslate: {fileID: 519420030}
+  cameraSpeed: 0.01
+  cameraOffset: {x: 0, y: 0.4, z: -10}
   knights:
   - {fileID: 8173351153019938392, guid: 970734e6b0fafb0438b2e905c46fee2c, type: 3}
   - {fileID: 858819004048725247, guid: e7f96f23ec4e5264f84ebbbf6d1602fb, type: 3}
@@ -13283,7 +13271,7 @@ TilemapCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_UsedByComposite: 1
+  m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0.00001
@@ -13361,29 +13349,11 @@ Tilemap:
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
       m_AllTileFlags: 1073741825
-  - first: {x: 2, y: -1, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 1
-      m_TileSpriteIndex: 1
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      m_AllTileFlags: 1073741825
   - first: {x: 3, y: -1, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
       m_TileSpriteIndex: 0
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      m_AllTileFlags: 1073741825
-  - first: {x: 4, y: -1, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 1
-      m_TileSpriteIndex: 1
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -13410,17 +13380,16 @@ Tilemap:
   m_TileAssetArray:
   - m_RefCount: 5
     m_Data: {fileID: 11400000, guid: ad64410d97fe39b4193125b28380122e, type: 2}
-  - m_RefCount: 2
-    m_Data: {fileID: 11400000, guid: 0e2c921b240fa07429836d5e223676ad, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileSpriteArray:
   - m_RefCount: 5
     m_Data: {fileID: -3821777026937811026, guid: b89a00df5beb4ed4b8071bc5299d4a13,
       type: 3}
-  - m_RefCount: 2
-    m_Data: {fileID: 1534258263048082733, guid: 6d4a5141582e18d47bc47cdc92d2a12b,
-      type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileMatrixArray:
-  - m_RefCount: 7
+  - m_RefCount: 5
     m_Data:
       e00: 1
       e01: 0
@@ -13439,7 +13408,7 @@ Tilemap:
       e32: 0
       e33: 1
   m_TileColorArray:
-  - m_RefCount: 7
+  - m_RefCount: 5
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
@@ -16364,16 +16333,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30605018587f6341b6706e9328c45cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _saveLoad: {fileID: 0}
   mainCamera: {fileID: 519420028}
   portal: {fileID: 1707352617}
   ground:
   - {fileID: 1775006374}
   - {fileID: 1356130025}
   - {fileID: 107886605}
-  stair: {fileID: 1538345405}
+  stair:
+  - {fileID: 1538345405}
   theExclamationMark: {fileID: 1321180243}
-  transparentOverlap: {fileID: 107886605}
+  transparentOverlap:
+  - {fileID: 107886605}
   stairText: Used stair?
   choseKnightText: Chose this knight?
   portalText: Start game?

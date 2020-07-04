@@ -20,10 +20,6 @@ public class SaveLoad : MonoBehaviour
         set => _camera = value;
     }
 
-    private string _path;
-
-    private XElement _root;
-
     private int _number;
 
     public int Number
@@ -31,6 +27,11 @@ public class SaveLoad : MonoBehaviour
         get => _number;
         set => _number = value;
     }
+    
+    private string _path;
+
+    private XElement _root;
+
     private void Awake()
     {
 #if !UNITY_EDITOR
@@ -49,18 +50,19 @@ public class SaveLoad : MonoBehaviour
 #endif
     private void OnApplicationQuit()
     {
-        SaveGame();
+        SaveNumber(_number);
     }
 
-    void SaveGame()
+    public void SaveNumber(int number)
     {
+        _number = number;
         _root = new XElement("root");
         _root.Add(new XElement("number", _number));
         XDocument data = new XDocument(_root);
         File.WriteAllText(_path, data.ToString());
     }
 
-    void LoadGame()
+    public void LoadGame()
     {
         if (!File.Exists(_path))
         {
@@ -73,7 +75,7 @@ public class SaveLoad : MonoBehaviour
 
         if (_root != null)
         {
-            _number = int.Parse(_root.Element("number").Value);
+            _number = int.Parse(_root.Element("number")?.Value ?? string.Empty);
         }
     }
 }

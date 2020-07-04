@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ChoseKnight : MonoBehaviour
 {
@@ -22,16 +20,15 @@ public class ChoseKnight : MonoBehaviour
     private Vector2 _centerActiveKnight;
     private Vector2 _getPosition;
 
-    void GetComponents()
+    private void GetComponents()
     {
         _generalInformation = gameObject.GetComponent<GeneralInformation>();
         dontDestroy = _generalInformation.DontDestroyManager;
         _numberKnight = _generalInformation.SaveLoad.Number;
     }
 
-    void Start()
+    private void Start()
     {
-
         GetComponents();
         ChoseTheMainKnight(_numberKnight, spawnPositionMainKnight.transform.position);
         if (createAfkKnights)
@@ -44,7 +41,7 @@ public class ChoseKnight : MonoBehaviour
         }
     }
 
-    void NeedAfkKnight(int needKnights)
+    private void NeedAfkKnight(int needKnights)
     {
         var afkKnight = Instantiate(knights[needKnights], transform.position, Quaternion.identity);
         _afkKnights.Add(afkKnight);
@@ -69,36 +66,37 @@ public class ChoseKnight : MonoBehaviour
         _generalInformation.CameraTranslate.GetTransform();
         _generalInformation.ButtonControl.KnightControl = _generalInformation.KnightController;
         _generalInformation.KnightController.HealthAndArmor = dontDestroy.GetComponent<HealthAndArmor>();
-        _generalInformation.SaveLoad.Number = numberMainCharacter;
         dontDestroy.GetComponent<ParametersAndGameObjects>().SetValue();
     }
 
     private void Update()
     {
-        if (ClosetObj() != null)
-        {
-            float distance =
+        if(createAfkKnights){
+            if (ClosetObj() != null)
+            {
+                float distance =
                     Vector2.Distance(_generalInformation.KnightController.GetComponent<BoxCollider2D>().bounds.center,
                         _nearbyKnight.transform.position);
 
-            if (distance < targetRange)
-            {
-                _generalInformation.KnightController.Trigger = true;
-                if (_generalInformation.KnightController.ClickMark)
+                if (distance < targetRange)
                 {
-                    _getPosition = _generalInformation.ActiveKnight.transform.position;
-                    _activeKnightNumber = _generalInformation.KnightController.MyNumber;
-                    _afkKnightNumber = _nearbyKnight.GetComponent<KnightController>().MyNumber;
-                    Destroy(_generalInformation.ActiveKnight);
-                    _afkKnights.Remove(_nearbyKnight);
-                    Destroy(_nearbyKnight);
-                    NeedAfkKnight(_activeKnightNumber);
-                    ChoseTheMainKnight(_afkKnightNumber,_getPosition);
+                    _generalInformation.KnightController.Trigger = true;
+                    if (_generalInformation.KnightController.ClickMark)
+                    {
+                        _getPosition = _generalInformation.ActiveKnight.transform.position;
+                        _activeKnightNumber = _generalInformation.KnightController.MyNumber;
+                        _afkKnightNumber = _nearbyKnight.GetComponent<KnightController>().MyNumber;
+                        Destroy(_generalInformation.ActiveKnight);
+                        _afkKnights.Remove(_nearbyKnight);
+                        Destroy(_nearbyKnight);
+                        NeedAfkKnight(_activeKnightNumber);
+                        ChoseTheMainKnight(_afkKnightNumber, _getPosition);
+                    }
                 }
-            }
-            else
-            {
+                else
+                {
                     _generalInformation.KnightController.Trigger = false;
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,10 +27,9 @@ public class Portal : MonoBehaviour
     void Start()
     {
         CreatePool();
-        
     }
 
-    GameObject Instance(Vector2 spawnPosition)
+    void Instance(Vector2 spawnPosition)
     {
         foreach (var instance in pool)
         {
@@ -38,27 +37,25 @@ public class Portal : MonoBehaviour
             {
                 instance.SetActive(true);
                 instance.transform.position = spawnPosition;
-                return instance;
+                return;
             }
         }
-
-        return null;
     }
 
     void Update()
     {
         var leftPosition = left.position;
         Instance(new Vector2(Random.Range(leftPosition.x, right.position.x), leftPosition.y));
-        for (int i = 0; i < pool.Count; i++)
+        foreach (var unit in pool)
         {
-            if (pool[i].activeInHierarchy)
+            if (unit.activeInHierarchy)
             {
-                pool[i].transform.Translate(Vector3.up * speed);
+                unit.transform.Translate(Vector3.up * speed);
             }
 
-            if (pool[i].transform.position.y > left.position.y + upBorder)
+            if (unit.transform.position.y > left.position.y + upBorder)
             {
-                pool[i].SetActive(false);
+                unit.SetActive(false);
             }
         }
     }

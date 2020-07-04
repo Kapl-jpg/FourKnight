@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UnityEngine;
 
 public class ButtonControl : MonoBehaviour
@@ -7,7 +8,6 @@ public class ButtonControl : MonoBehaviour
 
     public KnightController KnightControl
     {
-        get => _knightControl;
         set => _knightControl = value;
     }
 
