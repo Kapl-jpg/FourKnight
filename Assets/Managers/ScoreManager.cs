@@ -22,7 +22,7 @@ public class ScoreManager : MonoBehaviour
                 var inst = Instantiate(coinPrefab, spawnPointCoin[i].transform.position, Quaternion.identity);
                 inst.transform.parent = coinParent.transform;
                 coinPool.Add(inst);
-                coinPool[i].GetComponent<Collider>().scoreManager = this;
+                coinPool[i].GetComponent<CoinCollider>().scoreManager = this;
             }
         }
     }
@@ -31,9 +31,9 @@ public class ScoreManager : MonoBehaviour
     {
         for (int i = 0; i < coinPool.Count; i++)
         {
-            if (coinPool[i].GetComponent<Collider>().knight == null)
+            if (coinPool[i].GetComponent<CoinCollider>().knight == null)
             {
-                coinPool[i].GetComponent<Collider>().knight = knight;
+                coinPool[i].GetComponent<CoinCollider>().knight = knight;
             }
         }
     }

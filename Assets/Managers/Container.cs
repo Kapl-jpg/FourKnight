@@ -1,9 +1,23 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Container : MonoBehaviour
 {
-    [SerializeField] private GeneralInformation generalInformation;
+    private GeneralInformation _generalInformation;
 
+    public GeneralInformation GeneralInformation
+    {
+        get => _generalInformation;
+        set => _generalInformation = value;
+    }
+    private ChoseKnight _choseKnight;
+
+    public ChoseKnight ChoseKnight
+    {
+        get => _choseKnight;
+        set => _choseKnight = value;
+    }
+    
     [SerializeField] private GameObject[] platform;
 
     public GameObject[] Platform
@@ -20,41 +34,60 @@ public class Container : MonoBehaviour
         set => floor = value;
     }
 
-    [SerializeField] private GameObject[] stairs;
+    [SerializeField] private List<GameObject> stairs = new List<GameObject>();
 
-    public GameObject[] Stairs
+
+    [SerializeField] private List<GameObject> transparentOverlap = new List<GameObject>();
+
+    [Header("Spawns point")]
+    [SerializeField] private Transform spawnKnight;
+
+    public Transform SpawnKnight
     {
-        get => stairs;
-        set => stairs = value;
+        get => spawnKnight;
+        set => spawnKnight = value;
     }
-
-    [SerializeField] private GameObject[] transparentOverlap;
-
-    public GameObject[] TransparentOverlap
-    {
-        get => transparentOverlap;
-        set => transparentOverlap = value;
-    }
-
     [SerializeField] private Transform[] zombieSpawn;
     [SerializeField] private Transform[] swardSpawn;
     [SerializeField] private Transform[] batSpawn;
     [SerializeField] private Transform[] wizardSpawn;
+    [Header("Map point")]
+    [SerializeField] private Transform beginMap;
 
+    public Transform BeginMap
+    {
+        get => beginMap;
+        set => beginMap = value;
+    }
+    [SerializeField] private Transform endMap;
+
+    public Transform EndMap
+    {
+        get => endMap;
+        set => endMap = value;
+    }
+
+    
     void Start()
     {
-        generalInformation.StairPool = stairs;
+        foreach (var stair in stairs)
+        {
+            _generalInformation.StairPool.Add(stair);
+        }
 
         foreach (var ground in floor)
         {
-            generalInformation.Ground.Add(ground);
-        }
-        foreach (var ground in platform)
-        {
-            generalInformation.Ground.Add(ground);
+            _generalInformation.Ground.Add(ground);
         }
 
-        generalInformation.TransparentOverlap = transparentOverlap;
-        
+        foreach (var ground in platform)
+        {
+            _generalInformation.Ground.Add(ground);
+        }
+
+        foreach (var trOver in transparentOverlap)
+        {
+            _generalInformation.TransparentOverlap.Add(trOver);
+        }
     }
 }

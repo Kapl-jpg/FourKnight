@@ -40,18 +40,12 @@ public class GeneralInformation : MonoBehaviour
     //Скрипт камеры
     private CameraTranslate _cameraTranslate;
 
-    public CameraTranslate CameraTranslate
-    {
-        get => _cameraTranslate;
-    }
+    public CameraTranslate CameraTranslate => _cameraTranslate;
 
     [Header("Get game objects")] [SerializeField]
     private GameObject mainCamera;
 
-    public GameObject MainCamera
-    {
-        get => mainCamera;
-    }
+    public GameObject MainCamera => mainCamera;
 
     [SerializeField] private GameObject portal;
 
@@ -61,13 +55,7 @@ public class GeneralInformation : MonoBehaviour
         set => portal = value;
     }
 
-    private GameObject[] transparentOverlap;
 
-    public GameObject[] TransparentOverlap
-    {
-        get => transparentOverlap;
-        set => transparentOverlap = value;
-    }
     [SerializeField] private List <GameObject> ground;
 
     public List<GameObject> Ground
@@ -107,18 +95,32 @@ public class GeneralInformation : MonoBehaviour
 
     [SerializeField] private string portalText;
 
-    public string PortalText
-    {
-        get => portalText;
-    }
+    public string PortalText => portalText;
 
-    private GameObject[] stairPool;
+    private List<GameObject> stairPool = new List<GameObject>();
 
-    public GameObject[] StairPool
+    public List<GameObject> StairPool
     {
         get => stairPool;
         set => stairPool = value;
     }
+
+    private List<GameObject> transparentOverlap = new List<GameObject>();
+
+    public List<GameObject> TransparentOverlap
+    {
+        get => transparentOverlap;
+        set => transparentOverlap = value;
+    }
+
+    [SerializeField] private Transform spawnPointMainKnight;
+
+    public Transform SpawnPointMainKnight
+    {
+        get => spawnPointMainKnight;
+        set => spawnPointMainKnight = value;
+    }
+
     private void Awake()
     {
         _cameraTranslate = mainCamera.GetComponent<CameraTranslate>();
@@ -127,7 +129,7 @@ public class GeneralInformation : MonoBehaviour
         _saveLoad.Camera = MainCamera.GetComponent<Camera>();
         _cameraTranslate.GeneralInformation = this;
         _dontDestroyManager = GameObject.FindGameObjectWithTag("MainManager");
-        _dontDestroyManager.GetComponent<ParametersAndGameObjects>().GeneralInformation = this;
+        _dontDestroyManager.GetComponent<ParametersCharacter>().GeneralInformation = this;
         _buttonControl = gameObject.GetComponent<ButtonControl>();
     }
 }

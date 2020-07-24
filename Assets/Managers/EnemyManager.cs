@@ -10,6 +10,7 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private GameObject batPrefab;
     [SerializeField] private GameObject swardPrefab;
 
+    
     [SerializeField] private List<GameObject> zombiePool = new List<GameObject>();
     [SerializeField] private List<GameObject> wizardPool = new List<GameObject>();
     [SerializeField] private List<GameObject> batPool = new List<GameObject>();
@@ -19,6 +20,8 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private Transform[] wizardPrefabSpawn;
     [SerializeField] private Transform[] batPrefabSpawn;
     [SerializeField] private Transform[] swardPrefabSpawn;
+    
+    
 
     
     private void Start()

@@ -158,11 +158,11 @@ public class KnightController : MonoBehaviour
         set => _jumpButton = value;
     }
 
-    private GameObject[] _stairs;
-
     private CompositeCollider2D[] _transparentOverlapComposite;
 
-    private GameObject[] _transparentOverlap;
+    private List<GameObject> _stairs;
+
+    private List<GameObject> _transparentOverlap;
 
     private bool _clickMark;
 
@@ -194,17 +194,15 @@ public class KnightController : MonoBehaviour
         }
         _theExclamationMark = _generalInformation.TheExclamationMark;
         _theExclamationMark.SetActive(false);
-        _transparentOverlap = new GameObject[_generalInformation.TransparentOverlap.Length];
         _transparentOverlap = _generalInformation.TransparentOverlap;
-        _transparentOverlapComposite = new CompositeCollider2D[_transparentOverlap.Length];
-        for (int i = 0; i < _transparentOverlap.Length; i++)
+        for (int i = 0; i < _transparentOverlap.Count; i++)
         {
             _transparentOverlapComposite[i] = _transparentOverlap[i].GetComponent<CompositeCollider2D>();
         }
 
-        _atTheTop = new bool[_transparentOverlap.Length];
-        _stayStair = new bool[_transparentOverlap.Length];
-        _stayTransparentOverlap = new bool[_transparentOverlap.Length];
+        _atTheTop = new bool[_transparentOverlap.Count];
+        _stayStair = new bool[_transparentOverlap.Count];
+        _stayTransparentOverlap = new bool[_transparentOverlap.Count];
     }
 
     void Start()
@@ -435,7 +433,7 @@ public class KnightController : MonoBehaviour
             }
         }
 
-        for (int j = 0; j < _transparentOverlap.Length; j++)
+        for (int j = 0; j < _transparentOverlap.Count; j++)
         {
             if (other.gameObject == _transparentOverlap[j])
             {
@@ -457,7 +455,7 @@ public class KnightController : MonoBehaviour
                 }
             }
 
-            for (int j = 0; j < _transparentOverlap.Length; j++)
+            for (int j = 0; j < _transparentOverlap.Count; j++)
             {
                 if (other.gameObject == _transparentOverlap[j])
                 {
@@ -471,7 +469,7 @@ public class KnightController : MonoBehaviour
     {
         if (_stairs != null)
         {
-            for (int i = 0; i < _stairs.Length; i++)
+            for (int i = 0; i < _stairs.Count; i++)
             {
                 if (other.gameObject == _stairs[i])
                 {
@@ -493,7 +491,7 @@ public class KnightController : MonoBehaviour
     {
         if (_stairs != null)
         {
-            for (int i = 0; i < _stairs.Length; i++)
+            for (int i = 0; i < _stairs.Count; i++)
             {
                 if (other.gameObject == _stairs[i])
                 {
