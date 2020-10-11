@@ -158,7 +158,7 @@ public class KnightController : MonoBehaviour
         set => _jumpButton = value;
     }
 
-    private CompositeCollider2D[] _transparentOverlapComposite;
+    private List<CompositeCollider2D> _transparentOverlapComposite = new List<CompositeCollider2D>();
 
     private List<GameObject> _stairs;
 
@@ -197,7 +197,7 @@ public class KnightController : MonoBehaviour
         _transparentOverlap = _generalInformation.TransparentOverlap;
         for (int i = 0; i < _transparentOverlap.Count; i++)
         {
-            _transparentOverlapComposite[i] = _transparentOverlap[i].GetComponent<CompositeCollider2D>();
+            _transparentOverlapComposite.Add(_transparentOverlap[i].GetComponent<CompositeCollider2D>());
         }
 
         _atTheTop = new bool[_transparentOverlap.Count];
@@ -392,14 +392,13 @@ public class KnightController : MonoBehaviour
         if (active)
         {
             _dialog.SetActive(true);
-            for (int i = 0; i < _stayStair.Length; i++)
+            foreach (var stay in _stayStair)
             {
-                if (_stayStair[i])
+                if (stay)
                 {
                     _activeMarkText.text = _generalInformation.StairText;
                 }
             }
-
 
             if (_trigger)
             {

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 public class ChoseMenuItem : Editor
@@ -65,7 +64,7 @@ public class CustomHierarchy : EditorWindow
     [MenuItem("Custom Hierarchy/Rename objects")]
     static void Init()
     {
-        CustomHierarchy window = (CustomHierarchy)EditorWindow.GetWindow(typeof(CustomHierarchy));
+        CustomHierarchy window = (CustomHierarchy)GetWindow(typeof(CustomHierarchy));
         window.Show();
     }
 
@@ -228,12 +227,11 @@ public class CreateGameObjects : EditorWindow
     private static string _roomName;
     private static int _number;
     private int index;
-    private string[] _name = {"TileMap", "TileMapRenderer","TileMapCollider","CompositeCollider2D"};
 
     [MenuItem("Custom Hierarchy/Create new level template")]
     private static void CallWindowCreateObjects()
     {
-        CreateGameObjects window = (CreateGameObjects)EditorWindow.GetWindow(typeof(CreateGameObjects));
+        CreateGameObjects window = (CreateGameObjects)GetWindow(typeof(CreateGameObjects));
         window.Show();
     }
 
@@ -294,5 +292,4 @@ public class CreateGameObjects : EditorWindow
         var endMap = new GameObject{name =  "EndMap"};
         endMap.transform.parent = level.transform;
     }
-
 }

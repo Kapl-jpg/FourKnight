@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ParametersCharacter : MonoBehaviour
@@ -18,7 +19,7 @@ public class ParametersCharacter : MonoBehaviour
 
     [SerializeField] private GameObject dialogWindow;
 
-    [SerializeField] private Text activeText;
+    [SerializeField] private Text activeMarkText;
 
     [SerializeField] private float runningSpeed;
 
@@ -28,6 +29,14 @@ public class ParametersCharacter : MonoBehaviour
 
     [SerializeField] private float secondsToWaitAnimation;
 
+    [SerializeField] private Text coinText;
+    
+    [SerializeField] private int coin;
+
+    private void Start()
+    {
+        coinText.text = coin.ToString();
+    }
 
     public void SetValue()
     {
@@ -38,6 +47,6 @@ public class ParametersCharacter : MonoBehaviour
         _knightController.SecondsToWaitAnimation = secondsToWaitAnimation;
         _knightController.Dialog = dialogWindow;
         _knightController.TheExclamationMark = theExclamationMark;
-        _knightController.ActiveMarkText = activeText;
+        _knightController.ActiveMarkText = activeMarkText;
     }
 }

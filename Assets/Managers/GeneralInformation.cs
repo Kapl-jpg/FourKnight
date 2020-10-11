@@ -55,7 +55,6 @@ public class GeneralInformation : MonoBehaviour
         set => portal = value;
     }
 
-
     [SerializeField] private List <GameObject> ground;
 
     public List<GameObject> Ground
@@ -105,7 +104,7 @@ public class GeneralInformation : MonoBehaviour
         set => stairPool = value;
     }
 
-    private List<GameObject> transparentOverlap = new List<GameObject>();
+    [SerializeField]private List<GameObject> transparentOverlap = new List<GameObject>();
 
     public List<GameObject> TransparentOverlap
     {
@@ -120,7 +119,7 @@ public class GeneralInformation : MonoBehaviour
         get => spawnPointMainKnight;
         set => spawnPointMainKnight = value;
     }
-
+    
     private void Awake()
     {
         _cameraTranslate = mainCamera.GetComponent<CameraTranslate>();

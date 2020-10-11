@@ -26,9 +26,10 @@ public class CameraTranslate : MonoBehaviour
     {
         if (_generalInformation.ActiveKnight != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position,
+            Transform transform1;
+            (transform1 = transform).position = Vector3.MoveTowards(transform.position,
                 _activeKnightTransform.transform.position + offset, _speedTranslate);
-            _speedTranslate = speed * Vector2.Distance(transform.position, _activeKnightTransform.position);
+            _speedTranslate = speed * Vector2.Distance(transform1.position, _activeKnightTransform.position);
         }
     }
 }

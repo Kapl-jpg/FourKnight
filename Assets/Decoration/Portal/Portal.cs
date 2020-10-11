@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Portal : MonoBehaviour
@@ -12,7 +11,7 @@ public class Portal : MonoBehaviour
     [SerializeField] private float upBorder;
     [SerializeField] private int poolCount;
 
-    List<GameObject> pool = new List<GameObject>();
+    private readonly List<GameObject> pool = new List<GameObject>();
 
     void CreatePool()
     {
@@ -24,7 +23,7 @@ public class Portal : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
         CreatePool();
     }
@@ -42,7 +41,7 @@ public class Portal : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         var leftPosition = left.position;
         Instance(new Vector2(Random.Range(leftPosition.x, right.position.x), leftPosition.y));
