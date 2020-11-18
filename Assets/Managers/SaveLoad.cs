@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SaveLoad : MonoBehaviour
 {
+    [SerializeField] private SingletonParameters singletonParameters;
     private CameraTranslate _cameraTranslate;
 
     public CameraTranslate CameraTranslate
@@ -20,14 +21,8 @@ public class SaveLoad : MonoBehaviour
         set => _camera = value;
     }
 
-    private int _number;
+    public int number;
 
-    public int Number
-    {
-        get => _number;
-        set => _number = value;
-    }
-    
     private string _path;
 
     private XElement _root;
@@ -50,33 +45,32 @@ public class SaveLoad : MonoBehaviour
 #endif
     private void OnApplicationQuit()
     {
-        SaveNumber(_number);
+        SaveNumber(number);
     }
 
-    public void SaveNumber(int number)
+    public void SaveNumber(int numberKnight)
     {
-        _number = number;
+        number = numberKnight;
         _root = new XElement("root");
-        _root.Add(new XElement("number", _number));
+        _root.Add(new XElement("number", number));
         XDocument data = new XDocument(_root);
         File.WriteAllText(_path, data.ToString());
     }
 
-    public void LoadGame()
+    private void LoadGame()
     {
-        if (!File.Exists(_path))
-        {
-            _root = XDocument.Parse(File.ReadAllText(_path)).Element("root");
-        }
-        else
-        {
-            _root = XDocument.Parse(File.ReadAllText(_path)).Element("root");
-        }
+        _root = XDocument.Parse(File.ReadAllText(_path)).Element("root");
 
         if (_root != null)
         {
-            _number = int.Parse(_root.Element("number")?.Value ?? string.Empty);
+            number = int.Parse(_root.Element("number")?.Value ?? string.Empty);
         }
+        else
+        {
+            number = Random.Range(0, singletonParameters.Knights.Count);
+        }
+
+        singletonParameters.NumberChoseKnight = number;
     }
 }
 

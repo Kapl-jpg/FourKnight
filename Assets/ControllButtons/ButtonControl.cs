@@ -2,55 +2,55 @@
 
 public class ButtonControl : MonoBehaviour
 {
-    private KnightController _knightControl;
+    private KnightController knightControl;
 
     public KnightController KnightControl
     {
-        set => _knightControl = value;
+        set => knightControl = value;
     }
 
     public void AttackButtonDown()
     {
-        _knightControl.AttackButton = true;
+        knightControl.AttackButton = true;
     }
 
     public void AttackButtonUp()
     {
-        _knightControl.AttackButton = false;
+        knightControl.AttackButton = false;
     }
 
     public void LeftButtonDown()
     {
-        _knightControl.LeftButton = true;
+        knightControl.LeftButton = true;
     }
 
     public void LeftButtonUp()
     {
-        _knightControl.LeftButton = false;
+        knightControl.LeftButton = false;
     }
 
     public void RightButtonDown()
     {
-        _knightControl.RightButton = true;
+        knightControl.RightButton = true;
     }
 
     public void RightButtonUp()
     {
-        _knightControl.RightButton = false;
+        knightControl.RightButton = false;
     }
 
     public void JumpButtonDown()
     {
-        _knightControl.JumpButton = true;
+        knightControl.JumpButton = true;
     }
 
     public void JumpButtonUp()
     {
-        _knightControl.JumpButton = false;
+        knightControl.JumpButton = false;
     }
 
     public void TheExclamationMark()
     {
-        _knightControl.ClickMark = true;
+        knightControl.ClickMark = true;
     }
 }

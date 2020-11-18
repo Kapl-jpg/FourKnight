@@ -3,15 +3,19 @@ using UnityEngine;
 
 public class ChoseKnight : MonoBehaviour
 {
-    private GeneralInformation _generalInformation;
-    private int _numberKnight;
+    [SerializeField] private ButtonControl buttonControl;
+    [SerializeField] private SingletonParameters singletonParameters;
+    [SerializeField] private GeneralInformation generalInformation;
+    [SerializeField] private CameraTranslate cameraTranslate;
+    [SerializeField] private CollectionsOfContainer collectionsOfContainer;
+    private int numberKnight;
     [SerializeField] private float targetRange;
     [SerializeField] private bool createAfkKnights;
-    [SerializeField] private GameObject[] knights;
+    private List<GameObject> knights = new List<GameObject>();
     private GameObject dontDestroy;
     
     private GameObject _nearbyKnight;
-    private List<GameObject> _afkKnights = new List<GameObject>();
+    private List<GameObject> afkKnights = new List<GameObject>();
 
     private int _activeKnightNumber;
     private int _afkKnightNumber;
@@ -21,71 +25,77 @@ public class ChoseKnight : MonoBehaviour
 
     private void GetComponents()
     {
-        _generalInformation = gameObject.GetComponent<GeneralInformation>();
-        dontDestroy = _generalInformation.DontDestroyManager;
-        _numberKnight = _generalInformation.SaveLoad.Number;
+        numberKnight = singletonParameters.NumberChoseKnight;
     }
 
     private void Start()
     {
+        
+        knights = singletonParameters.Knights;
         GetComponents();
-        ChoseTheMainKnight(_numberKnight, _generalInformation.SpawnPointMainKnight.position);
+        ChoseTheMainKnight(numberKnight, generalInformation.SpawnPointMainKnight.position);
         if (createAfkKnights)
         {
-            for (int i = 0; i < knights.Length; i++)
+            for (int i = 0; i < knights.Count; i++)
             {
-                if (i != _numberKnight)
+                if (i != numberKnight)
                     NeedAfkKnight(i);
             }
         }
     }
-
+    
     private void NeedAfkKnight(int needKnights)
     {
         var afkKnight = Instantiate(knights[needKnights], transform.position, Quaternion.identity);
-        _afkKnights.Add(afkKnight);
-        afkKnight.GetComponent<KnightController>().GeneralInformation = _generalInformation;
-        afkKnight.GetComponent<KnightController>().Afk = true;
-        afkKnight.GetComponent<KnightController>().MyNumber = needKnights;
+        afkKnights.Add(afkKnight);
+        var afkKnightController = afkKnight.GetComponent<KnightController>();
+        afkKnightController.Afk = true;
+        afkKnightController.MyNumber = needKnights;
+        afkKnightController.CollectionsOfContainer = collectionsOfContainer;
     }
 
-    void ChoseTheMainKnight(int numberMainCharacter, Vector2 spawn)
+    private void ChoseTheMainKnight(int numberMainCharacter, Vector2 spawn)
     {
-        if (_generalInformation.ActiveKnight != null)
+        if (generalInformation.ActiveKnight != null)
         {
-            Destroy(_generalInformation.ActiveKnight);
+            Destroy(generalInformation.ActiveKnight);
         }
 
         var mainCharacter = Instantiate(knights[numberMainCharacter], spawn, Quaternion.identity);
-        _generalInformation.ActiveKnight = mainCharacter;
-        _generalInformation.KnightController = mainCharacter.GetComponent<KnightController>();
-        _generalInformation.KnightController.GeneralInformation = _generalInformation;
-        _generalInformation.KnightController.MyNumber = numberMainCharacter;
-        _generalInformation.CameraTranslate.GetTransform();
-        _generalInformation.ButtonControl.KnightControl = _generalInformation.KnightController;
-        _generalInformation.KnightController.HealthAndArmor = dontDestroy.GetComponent<HealthAndArmor>();
-        dontDestroy.GetComponent<ParametersCharacter>().SetValue();
+        cameraTranslate.ActiveKnight = mainCharacter;
+        var knightController = mainCharacter.GetComponent<KnightController>();
+        knightController.Speed = singletonParameters.RunningSpeedKnight;
+        knightController.SpeedStair = singletonParameters.SpeedStairKnight;
+        knightController.JumpForce = singletonParameters.ForceJumpKnight;
+        knightController.SecondsToWaitAnimation = singletonParameters.SecondsToWaitAnimationKnight;
+        knightController.CollectionsOfContainer = collectionsOfContainer;
+        buttonControl.KnightControl = knightController;
     }
 
-    private void Update()
+    private void ReElection()
     {
+        
+    }
+    
+    private void Update()
+    {/*
         if(createAfkKnights){
             if (ClosetObj() != null)
             {
                 float distance =
-                    Vector2.Distance(_generalInformation.KnightController.GetComponent<BoxCollider2D>().bounds.center,
+                    Vector2.Distance(generalInformation.KnightController.GetComponent<BoxCollider2D>().bounds.center,
                         _nearbyKnight.transform.position);
 
                 if (distance < targetRange)
                 {
-                    _generalInformation.KnightController.Trigger = true;
-                    if (_generalInformation.KnightController.ClickMark)
+                    generalInformation.KnightController.Trigger = true;
+                    if (generalInformation.KnightController.ClickMark)
                     {
-                        _getPosition = _generalInformation.ActiveKnight.transform.position;
-                        _activeKnightNumber = _generalInformation.KnightController.MyNumber;
+                        _getPosition = generalInformation.ActiveKnight.transform.position;
+                        _activeKnightNumber = generalInformation.KnightController.MyNumber;
                         _afkKnightNumber = _nearbyKnight.GetComponent<KnightController>().MyNumber;
-                        Destroy(_generalInformation.ActiveKnight);
-                        _afkKnights.Remove(_nearbyKnight);
+                        Destroy(generalInformation.ActiveKnight);
+                        afkKnights.Remove(_nearbyKnight);
                         Destroy(_nearbyKnight);
                         NeedAfkKnight(_activeKnightNumber);
                         ChoseTheMainKnight(_afkKnightNumber, _getPosition);
@@ -93,25 +103,24 @@ public class ChoseKnight : MonoBehaviour
                 }
                 else
                 {
-                    _generalInformation.KnightController.Trigger = false;
+                    generalInformation.KnightController.Trigger = false;
                 }
             }
         }
 
         GameObject ClosetObj()
         {
-            foreach (GameObject go in _afkKnights)
+            foreach (GameObject item in afkKnights)
             {
-                float distance =
-                    Vector2.Distance(_generalInformation.KnightController.GetComponent<BoxCollider2D>().bounds.center,
-                        go.transform.position);
+                float distance = Vector2.Distance(generalInformation.KnightController.GetComponent<BoxCollider2D>().bounds.center,
+                        item.transform.position);
                 if (distance < targetRange)
                 {
-                    _nearbyKnight = go;
+                    _nearbyKnight = item;
                 }
             }
-
+            
             return _nearbyKnight;
-        }
+        }*/
     }
 }

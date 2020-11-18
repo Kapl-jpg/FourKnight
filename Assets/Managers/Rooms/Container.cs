@@ -1,15 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
 public class Container : MonoBehaviour
 {
-    private GeneralInformation _generalInformation;
-
-    public GeneralInformation GeneralInformation
-    {
-        set => _generalInformation = value;
-    }
+    [SerializeField] private CollectionsOfContainer collectionsOfContainer;
 
     private GenerationOfDungeon _generationOfDungeon;
 
@@ -25,21 +19,13 @@ public class Container : MonoBehaviour
         set => stage = value;
     }
 
-    [SerializeField] private GameObject platform;
+    [SerializeField] private List<GameObject> platform = new List<GameObject>();
 
-    [SerializeField] private GameObject floor;
+    [SerializeField] private List<GameObject> floor = new List<GameObject>();
 
     [SerializeField] private List<GameObject> stairs = new List<GameObject>();
 
     [SerializeField] private List<GameObject> transparentOverlap = new List<GameObject>();
-
-    [SerializeField] List<GameObject> gates = new List<GameObject>();
-
-    public List<GameObject> Gates => gates;
-
-    [SerializeField] List<GameObject> invisibleGates = new List<GameObject>();
-
-    public List<GameObject> InvisibleGates => invisibleGates;
 
     [Header("Spawns point")] [SerializeField]
     private Transform spawnKnight;
@@ -65,6 +51,7 @@ public class Container : MonoBehaviour
         get => zombieSpawnParent;
         set => zombieSpawnParent = value;
     }
+
     private readonly List<GameObject> zombiePool = new List<GameObject>();
     private readonly List<int> randomNumberSpawnZombie = new List<int>();
     private GameObject zombiePrefab;
@@ -73,12 +60,12 @@ public class Container : MonoBehaviour
     {
         set => zombiePrefab = value;
     }
-    [HideInInspector]
-    public AnimationCurve zombieChance;
+
+    [HideInInspector] public AnimationCurve zombieChance;
 
 
     [Header("Sward")] //Create sward
-    
+
     [HideInInspector]
     public bool createSward;
 
@@ -97,7 +84,7 @@ public class Container : MonoBehaviour
         get => swardSpawnParent;
         set => swardSpawnParent = value;
     }
-    
+
     private List<GameObject> swardPool = new List<GameObject>();
     private List<int> randomNumberSpawnSward = new List<int>();
     private GameObject swardPrefab;
@@ -106,9 +93,8 @@ public class Container : MonoBehaviour
     {
         set => swardPrefab = value;
     }
-    
-    [HideInInspector]
-    public AnimationCurve swardChance;
+
+    [HideInInspector] public AnimationCurve swardChance;
 
     [Header("Bat")] //Create bat
     [HideInInspector]
@@ -129,21 +115,22 @@ public class Container : MonoBehaviour
         get => batSpawnParent;
         set => batSpawnParent = value;
     }
+
     private List<GameObject> batPool = new List<GameObject>();
     private List<int> randomNumberSpawnBat = new List<int>();
     private GameObject batPrefab;
-    
+
     public GameObject BatPrefab
     {
         set => batPrefab = value;
     }
-    [HideInInspector]
-    public AnimationCurve batChance;
+
+    [HideInInspector] public AnimationCurve batChance;
 
     [Header("Wizard")] //Create wizard
     [HideInInspector]
     public bool createWizard;
-    
+
     private List<Transform> wizardSpawnPool;
 
     public List<Transform> WizardSpawnPool
@@ -159,6 +146,7 @@ public class Container : MonoBehaviour
         get => wizardSpawnParent;
         set => wizardSpawnParent = value;
     }
+
     private List<GameObject> wizardPool = new List<GameObject>();
     private readonly List<int> randomNumberSpawnWizard = new List<int>();
     private GameObject wizardPrefab;
@@ -167,8 +155,8 @@ public class Container : MonoBehaviour
     {
         set => wizardPrefab = value;
     }
-    [HideInInspector]
-    public AnimationCurve wizardChance;
+
+    [HideInInspector] public AnimationCurve wizardChance;
 
 
     [Header("Map point")] [SerializeField] private Transform beginMap;
@@ -184,8 +172,7 @@ public class Container : MonoBehaviour
     private Vector3 oneCell;
 
     private bool _fight;
-    [HideInInspector]
-    public bool createEnemy;
+    [HideInInspector] public bool createEnemy;
 
     public void AddNewSpawn(GameObject parent, List<Transform> pool)
     {
@@ -194,7 +181,7 @@ public class Container : MonoBehaviour
             pool.RemoveAll(x => x == null);
         }
 
-        var spawn = new GameObject("Spawn (" + pool.Count+")");
+        var spawn = new GameObject("Spawn (" + pool.Count + ")");
         spawn.transform.parent = parent.transform;
         pool.Add(spawn.transform);
     }
@@ -271,21 +258,31 @@ public class Container : MonoBehaviour
         }
     }
 
-    void Start()
+    void Awake()
     {
-        _generalInformation.Ground.Add(platform);
-        _generalInformation.Ground.Add(floor);
-        oneCell = GetComponent<Grid>().cellSize;
+        foreach (var floorPart in floor)
+        {
+            collectionsOfContainer.Floor.Add(floorPart);
+        }
+
+        foreach (var platformPart in platform)
+        {
+            collectionsOfContainer.Platforms.Add(platformPart);
+        }
+
         foreach (var stair in stairs)
         {
-            _generalInformation.StairPool.Add(stair);
+            
+            collectionsOfContainer.Stair.Add(stair);
         }
 
-        foreach (var trOver in transparentOverlap)
+        foreach (var overlap in transparentOverlap)
         {
-            _generalInformation.TransparentOverlap.Add(trOver);
+            collectionsOfContainer.TransparentOverlap.Add(overlap);
         }
-
+        
+        //oneCell = GetComponent<Grid>().cellSize;
+/*
         if (!createEnemy) return;
         if (zombieSpawnPool.Count <= 0 || swardSpawnPool.Count <= 0 || batSpawnPool.Count <= 0 ||
             wizardSpawnPool.Count <= 0) return;
@@ -293,13 +290,9 @@ public class Container : MonoBehaviour
         var randomCountSward = Random.Range(1, SwardSpawnPool.Count + 1);
         var randomCountBat = Random.Range(1, BatSpawnPool.Count + 1);
         var randomCountWizard = Random.Range(1, WizardSpawnPool.Count + 1);
-        CreateMonster(randomCountZombie, randomCountSward, randomCountBat, randomCountWizard);
+        //CreateMonster(randomCountZombie, randomCountSward, randomCountBat, randomCountWizard);
     }
-
-    private void Update()
-    {
-        
-    }
+    
     void CreateMonster(int randomCountZombie, int randomCountSward, int randomCountBat, int randomCountWizard)
     {
         //Zombie
@@ -392,7 +385,7 @@ public class Container : MonoBehaviour
                     i--;
                 }
             }
-        }
+        }*/
     }
 }
 

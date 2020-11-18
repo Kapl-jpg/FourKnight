@@ -47,14 +47,6 @@ public class GeneralInformation : MonoBehaviour
 
     public GameObject MainCamera => mainCamera;
 
-    [SerializeField] private GameObject portal;
-
-    public GameObject Portal
-    {
-        get => portal;
-        set => portal = value;
-    }
-
     [SerializeField] private List <GameObject> ground;
 
     public List<GameObject> Ground
@@ -77,25 +69,7 @@ public class GeneralInformation : MonoBehaviour
         get => _activeKnight;
         set => _activeKnight = value;
     }
-
-    [SerializeField] private string stairText;
-
-    public string StairText
-    {
-        get => stairText;
-    }
-
-    [SerializeField] private string choseKnightText;
-
-    public string ChoseKnightText
-    {
-        get => choseKnightText;
-    }
-
-    [SerializeField] private string portalText;
-
-    public string PortalText => portalText;
-
+    
     private List<GameObject> stairPool = new List<GameObject>();
 
     public List<GameObject> StairPool
@@ -126,9 +100,6 @@ public class GeneralInformation : MonoBehaviour
         _saveLoad = gameObject.GetComponent<SaveLoad>();
         _saveLoad.CameraTranslate = _cameraTranslate;
         _saveLoad.Camera = MainCamera.GetComponent<Camera>();
-        _cameraTranslate.GeneralInformation = this;
-        _dontDestroyManager = GameObject.FindGameObjectWithTag("MainManager");
-        _dontDestroyManager.GetComponent<ParametersCharacter>().GeneralInformation = this;
         _buttonControl = gameObject.GetComponent<ButtonControl>();
     }
 }

@@ -1,18 +1,13 @@
-﻿
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class KnightController : MonoBehaviour
 {
+    public CollectionsOfContainer CollectionsOfContainer;
     //Скрипты, связанные с персонажем ***
-    private GeneralInformation _generalInformation;
-
-    public GeneralInformation GeneralInformation
-    {
-        set => _generalInformation = value;
-    }
 
     private HealthAndArmor _healthAndArmor;
 
@@ -24,25 +19,9 @@ public class KnightController : MonoBehaviour
 
     private KnightAnimation _knightAnimation;
 
-    //Параметры персонажа ***
+    //Параметры персонажа
     [SerializeField] private int quantityHealth;
     [SerializeField] private int quantityArmor;
-    private List<GameObject> _ground = new List<GameObject>();
-    private Text _activeMarkText;
-
-    public Text ActiveMarkText
-    {
-        get => _activeMarkText;
-        set => _activeMarkText = value;
-    }
-
-    private GameObject _dialog;
-
-    public GameObject Dialog
-    {
-        get => _dialog;
-        set => _dialog = value;
-    }
 
     private GameObject _theExclamationMark;
 
@@ -52,37 +31,13 @@ public class KnightController : MonoBehaviour
         set => _theExclamationMark = value;
     }
 
-    private float _speed;
+    public float Speed { get; set; }
 
-    public float Speed
-    {
-        get => _speed;
-        set => _speed = value;
-    }
+    public float JumpForce { get; set; }
 
-    private float _force;
+    public float SecondsToWaitAnimation { get; set; }
 
-    public float Force
-    {
-        get => _force;
-        set => _force = value;
-    }
-
-    private float _secondsToWaitAnimation;
-
-    public float SecondsToWaitAnimation
-    {
-        get => _secondsToWaitAnimation;
-        set => _secondsToWaitAnimation = value;
-    }
-
-    private float _speedStair;
-
-    public float SpeedStair
-    {
-        get => _speedStair;
-        set => _speedStair = value;
-    }
+    public float SpeedStair { get; set; }
 
     private bool _stayGround;
     private float _timerToNewAttack;
@@ -151,34 +106,52 @@ public class KnightController : MonoBehaviour
         set => _rightButton = value;
     }
 
-    private bool _jumpButton;
+    private bool jumpButton;
 
     public bool JumpButton
     {
-        set => _jumpButton = value;
+        set => jumpButton = value;
     }
 
     private List<CompositeCollider2D> _transparentOverlapComposite = new List<CompositeCollider2D>();
 
-    private List<GameObject> _stairs;
+    public List<GameObject> Stairs { get; set; } = new List<GameObject>();
 
-    private List<GameObject> _transparentOverlap;
+    public List<GameObject> TransparentOverlap { get; set; } = new List<GameObject>();
 
-    private bool _clickMark;
-
-    public bool ClickMark
-    {
-        get => _clickMark;
-        set => _clickMark = value;
-    }
+    public List<GameObject> Platforms { get; set; }= new List<GameObject>();
+    
+    public List<GameObject> Floor { get; set; } = new List<GameObject>();
+    
+    public bool ClickMark { get; set; }
 
     [SerializeField] private Vector2 spawnPosition;
 
 
     private void GetComponents()
     {
-        _ground = _generalInformation.Ground;
-        _portal = _generalInformation.Portal;
+       // CollectionsOfContainer = FindObjectOfType<CollectionsOfContainer>();
+        
+            foreach (var platform in CollectionsOfContainer.Platforms)
+            {
+                Platforms.Add(platform);
+            }
+
+            foreach (var floor in CollectionsOfContainer.Floor)
+            {
+                Floor.Add(floor);
+            }
+
+            foreach (var stair in CollectionsOfContainer.Stair)
+            {
+                Stairs.Add(stair);
+            }
+
+            foreach (var overlap in CollectionsOfContainer.TransparentOverlap)
+            {
+                TransparentOverlap.Add(overlap);
+            }
+        
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _rb2D = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -187,33 +160,35 @@ public class KnightController : MonoBehaviour
 
     private void GetParameters()
     {
-        _stairs = _generalInformation.StairPool;
-        foreach (var transparentOverlap in _generalInformation.TransparentOverlap)
+        //_theExclamationMark = generalInformation.TheExclamationMark;
+//        _theExclamationMark.SetActive(false);
+
+
+        for (int i = 0; i < TransparentOverlap.Count; i++)
         {
-            _ground.Add(transparentOverlap);
-        }
-        _theExclamationMark = _generalInformation.TheExclamationMark;
-        _theExclamationMark.SetActive(false);
-        _transparentOverlap = _generalInformation.TransparentOverlap;
-        for (int i = 0; i < _transparentOverlap.Count; i++)
-        {
-            _transparentOverlapComposite.Add(_transparentOverlap[i].GetComponent<CompositeCollider2D>());
+            _transparentOverlapComposite.Add(TransparentOverlap[i].GetComponent<CompositeCollider2D>());
         }
 
-        _atTheTop = new bool[_transparentOverlap.Count];
-        _stayStair = new bool[_transparentOverlap.Count];
-        _stayTransparentOverlap = new bool[_transparentOverlap.Count];
+        _atTheTop = new bool[TransparentOverlap.Count];
+        _stayStair = new bool[TransparentOverlap.Count];
+        _stayTransparentOverlap = new bool[TransparentOverlap.Count];
+    }
+
+    private void Awake()
+    {
+        
     }
 
     void Start()
     {
+        
         GetComponents();
-        _generalInformation.SaveLoad.SaveNumber(_myNumber);
+        //generalInformation.SaveLoad.SaveNumber(_myNumber);
         if (!_afk)
         {
             GetParameters();
             _spriteRenderer.sortingOrder = 5;
-            _healthAndArmor.CreateHealthAndArmor(quantityHealth, quantityArmor);
+//            _healthAndArmor.CreateHealthAndArmor(quantityHealth, quantityArmor);
         }
         else
         {
@@ -226,21 +201,21 @@ public class KnightController : MonoBehaviour
 
     void Update()
     {
-        _knightAnimation.AttackButton = _attackButton;
+        //_knightAnimation.AttackButton = _attackButton;
         if (!_afk)
         {
-            for (int i = 0; i < _stayStair.Length; i++)
+           /* for (int i = 0; i < _stayStair.Length; i++)
             {
                 ActiveMark(_trigger || _stayPortal);
-            }
+            }*/
 
-            ClimbingTheStairs();
-            Portal();
+            //ClimbingTheStairs();
+            //Portal();
             Controlling();
         }
         else
         {
-            Rotate(_generalInformation.ActiveKnight.transform.position.x < transform.position.x ? 180 : 0, _afk);
+            //Rotate(generalInformation.ActiveKnight.transform.position.x < transform.position.x ? 180 : 0, _afk);
         }
     }
 
@@ -265,24 +240,24 @@ public class KnightController : MonoBehaviour
         {
             if (_leftButton) //Идти влево
             {
-                _rb2D.velocity = new Vector2(-_speed, _rb2D.velocity.y);
+                _rb2D.velocity = new Vector2(-Speed, _rb2D.velocity.y);
                 Rotate(180, _afk);
                 _knightAnimation.BoolRun = true;
             }
 
             if (_rightButton) //Идти вправо
             {
-                _rb2D.velocity = new Vector2(_speed, _rb2D.velocity.y);
+                _rb2D.velocity = new Vector2(Speed, _rb2D.velocity.y);
                 Rotate(0, _afk);
                 _knightAnimation.BoolRun = true;
             }
 
-            if (_jumpButton && (_stayGround || _numberJump < 1)) //Прыгнуть
+            if (jumpButton && (_stayGround || _numberJump < 1)) //Прыгнуть
             {
                 _numberJump++;
                 _rb2D.velocity = new Vector2(0, 0);
-                _rb2D.AddForce(new Vector2(0, _force));
-                _jumpButton = false;
+                _rb2D.AddForce(new Vector2(0, JumpForce));
+                jumpButton = false;
             }
         }
 
@@ -308,7 +283,7 @@ public class KnightController : MonoBehaviour
             _timerWait += Time.deltaTime;
         }
 
-        if (_timerWait >= _secondsToWaitAnimation)
+        if (_timerWait >= SecondsToWaitAnimation)
         {
             _knightAnimation.BoolWait = true;
         }
@@ -318,7 +293,7 @@ public class KnightController : MonoBehaviour
     {
         if (_stayPortal)
         {
-            if (_clickMark)
+            if (ClickMark)
             {
                 SceneManager.LoadScene("Parts");
             }
@@ -331,9 +306,9 @@ public class KnightController : MonoBehaviour
         {
             if (_stayStair[i])
             {
-                ActiveMark(_stayStair[i]);
+               // ActiveMark(_stayStair[i]);
                 
-                if (_clickMark)
+                if (ClickMark)
                 {
                     if (!_atTheTop[i] && !_climbUp && !_climbDown)
                     {
@@ -349,13 +324,13 @@ public class KnightController : MonoBehaviour
 
                     if (_climbUp)
                     {
-                        _rb2D.velocity = Vector2.up * _speedStair;
+                        _rb2D.velocity = Vector2.up * SpeedStair;
                         _transparentOverlapComposite[i].isTrigger = true;
                         if (_atTheTop[i])
                         {
                             _transparentOverlapComposite[i].isTrigger = false;
                             _climbUp = false;
-                            _clickMark = false;
+                            ClickMark = false;
                         }
                     }
 
@@ -366,7 +341,7 @@ public class KnightController : MonoBehaviour
                         {
                             _transparentOverlapComposite[i].isTrigger = false;
                             _climbDown = false;
-                            _clickMark = false;
+                            ClickMark = false;
                         }
                     }
                 }
@@ -391,39 +366,36 @@ public class KnightController : MonoBehaviour
     {
         if (active)
         {
-            _dialog.SetActive(true);
-            foreach (var stay in _stayStair)
-            {
-                if (stay)
-                {
-                    _activeMarkText.text = _generalInformation.StairText;
-                }
-            }
-
-            if (_trigger)
-            {
-                _activeMarkText.text = _generalInformation.ChoseKnightText;
-            }
-
-            if (_stayPortal)
-            {
-                _activeMarkText.text = _generalInformation.PortalText;
-            }
-
             _theExclamationMark.SetActive(true);
         }
         else
         {
-            _dialog.SetActive(false);
             _theExclamationMark.SetActive(false);
         }
     }
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        foreach (var land in _ground)
+        foreach (var platform in Platforms.Where(platform => other.gameObject == platform))
         {
-            if (other.gameObject == land)
+            _numberJump = 0;
+            _stayGround = true;
+            _knightAnimation.ResumeAnimation();
+            _knightAnimation.Ground = true;
+        }
+        foreach (var overlap in TransparentOverlap)
+        {
+            if (other.gameObject == overlap)
+            {
+                _numberJump = 0;
+                _stayGround = true;
+                _knightAnimation.ResumeAnimation();
+                _knightAnimation.Ground = true;
+            }
+        }
+        foreach (var floor in Floor)
+        {
+            if (other.gameObject == floor)
             {
                 _numberJump = 0;
                 _stayGround = true;
@@ -432,9 +404,9 @@ public class KnightController : MonoBehaviour
             }
         }
 
-        for (int j = 0; j < _transparentOverlap.Count; j++)
+        for (int j = 0; j < TransparentOverlap.Count; j++)
         {
-            if (other.gameObject == _transparentOverlap[j])
+            if (other.gameObject == TransparentOverlap[j])
             {
                 _stayTransparentOverlap[j] = true;
             }
@@ -443,34 +415,43 @@ public class KnightController : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D other)
     {
-        if (_ground != null)
+        
+        foreach (var overlap in TransparentOverlap)
         {
-            foreach (var land in _ground)
-            {
-                if (other.gameObject == land)
-                {
-                    _stayGround = false;
-                    _knightAnimation.Ground = false;
-                }
-            }
+            if (other.gameObject != overlap) continue;
+            _stayGround = false;
+            _knightAnimation.Ground = false;
+        }
+        foreach (var platform in Platforms)
+        {
+            if (other.gameObject != platform) continue;
+            _stayGround = false;
+            _knightAnimation.Ground = false;
+        }
 
-            for (int j = 0; j < _transparentOverlap.Count; j++)
+        foreach (var floor in Floor)
+        {
+            if (other.gameObject != floor) continue;
+            _stayGround = false;
+            _knightAnimation.Ground = false;
+        }
+
+        for (int j = 0; j < TransparentOverlap.Count; j++)
+        {
+            if (other.gameObject == TransparentOverlap[j])
             {
-                if (other.gameObject == _transparentOverlap[j])
-                {
-                    _stayTransparentOverlap[j] = false;
-                }
+                _stayTransparentOverlap[j] = false;
             }
         }
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (_stairs != null)
+        if (Stairs != null)
         {
-            for (int i = 0; i < _stairs.Count; i++)
+            for (int i = 0; i < Stairs.Count; i++)
             {
-                if (other.gameObject == _stairs[i])
+                if (other.gameObject == Stairs[i])
                 {
                     _stayStair[i] = true;
                 }
@@ -488,11 +469,11 @@ public class KnightController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (_stairs != null)
+        if (Stairs != null)
         {
-            for (int i = 0; i < _stairs.Count; i++)
+            for (int i = 0; i < Stairs.Count; i++)
             {
-                if (other.gameObject == _stairs[i])
+                if (other.gameObject == Stairs[i])
                 {
                     _stayStair[i] = false;
                 }

@@ -223,7 +223,25 @@ public class CustomHierarchy : EditorWindow
 
 public class CreateGameObjects : EditorWindow
 {
-    private static List<GameObject> _createObjects = new List<GameObject>();
+    private static int _id;
+    private static string _name;
+    static CreateGameObjects()
+    {
+        EditorApplication.hierarchyWindowItemOnGUI += Hierarchy;
+    }
+    static void Hierarchy(int instanceId, Rect rect)
+    {
+        var obj = EditorUtility.InstanceIDToObject(instanceId);
+        if (obj != null)
+        {
+            if (Selection.instanceIDs.Contains(instanceId))
+            {
+                _id = obj.GetInstanceID();
+            }
+        }
+    }
+
+    private static GameObject _room;
     private static string _roomName;
     private static int _number;
     private int index;
@@ -242,9 +260,12 @@ public class CreateGameObjects : EditorWindow
 
     private void OnGUI()
     {
-        if (GUILayout.Button("Create level"))
+        if (GUILayout.Button("Create room"))
         {
-            CreateLevel();
+            _room = new GameObject {name = "Room (" + _number + ")"};
+            _room.AddComponent<Grid>().cellSize = new Vector3(0.2f,0.2f);
+            _room.AddComponent<Container>();
+            CreateRoom();
         }
         
         EditorGUILayout.BeginHorizontal();
@@ -256,40 +277,83 @@ public class CreateGameObjects : EditorWindow
             var gameObject = new GameObject {name = _roomName};
         }
         EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginVertical();
+        
+        if (GUILayout.Button("Copy element"))
+        {
+            var obj = EditorUtility.InstanceIDToObject(_id) as GameObject;
+            var duplicate =Instantiate(obj, _room.transform, true);
+        }
+        EditorGUILayout.EndVertical();
+        if (GUILayout.Button("Transparency"))
+        {
+            var obj = EditorUtility.InstanceIDToObject(_id)as GameObject;
+            if (!(obj is null)) obj.GetComponent<Tilemap>().color = new Color(1, 1, 1, 0.5f);
+        }
     }
 
-    static void CreateLevel()
+    static void CreateRoom()
     {
+        var createObjects =new List<GameObject>();
+        var colliderPool = new List<GameObject>();
         _number++;
-        GameObject level = new GameObject {name = "Level (" + _number + ")"};
-        level.AddComponent<Grid>();
-        level.GetComponent<Grid>().cellSize = new Vector3(0.2f,0.2f);
-        level.AddComponent<Container>();
-        _createObjects.Add(new GameObject{name = "Background"});
-        _createObjects.Add(new GameObject{name = "Walls"});
-        _createObjects.Add(new GameObject{name = "Roof"});
-        _createObjects.Add(new GameObject{name = "Floor"});
-        _createObjects.Add(new GameObject{name =  "EmptySpace"});
-        _createObjects.Add(new GameObject{name = "Platform"});
-        _createObjects.Add(new GameObject{name = "Stair"});
-        _createObjects.Add(new GameObject{name = "TransparentOverlap"});
-        _createObjects.Add(new GameObject{name = "GatesLeft"});
-        _createObjects.Add(new GameObject{name = "GatesRight"});
-        _createObjects.Add(new GameObject{name = "Decoration"});
-        _createObjects.Add(new GameObject{name = "Web"});
-        _createObjects.Add(new GameObject{name = "Flames"});
+
+        var backGround = new GameObject {name = "Background"};
+        backGround.AddComponent<Tilemap>();
+        backGround.AddComponent<TilemapRenderer>().sortingOrder = 0;
+        createObjects.Add(backGround);
+        var walls = new GameObject {name = "Walls"};
+        walls.AddComponent<TilemapRenderer>().sortingOrder = 0;
+        createObjects.Add(walls);
+        colliderPool.Add(walls);
+        var ceiling= new GameObject{name = "Ceiling"};
+        ceiling.AddComponent<TilemapRenderer>().sortingOrder = 0;
+        createObjects.Add(ceiling);
+        colliderPool.Add(ceiling);
+        var floor = new GameObject {name = "Floor"};
+        floor.AddComponent<TilemapRenderer>().sortingOrder = 0;
+        createObjects.Add(floor);
+        colliderPool.Add(floor);
+        var emptySpace = new GameObject {name = "EmptySpace"};
+        emptySpace.AddComponent<Tilemap>();
+        emptySpace.AddComponent<TilemapRenderer>().sortingOrder = 0;
+        createObjects.Add(emptySpace);
+        var platform = new GameObject {name = "Platform"};
+        platform.AddComponent<TilemapRenderer>().sortingOrder = 1;
+        createObjects.Add(platform);
+        colliderPool.Add(platform);
+        var stair = new GameObject {name = "Stair"};
+        stair.AddComponent<TilemapRenderer>().sortingOrder = 2;
+        stair.AddComponent<TilemapCollider2D>();
+        createObjects.Add(stair);
+        var transparentOverlap = new GameObject {name = "TransparentOverlap"};
+        transparentOverlap.AddComponent<Tilemap>().color = new Color(1,1,1,0.5f);
+        transparentOverlap.AddComponent<TilemapRenderer>().sortingOrder = 3;
+        createObjects.Add(transparentOverlap);
+        colliderPool.Add(transparentOverlap);
+        var decoration = new GameObject {name = "Decoration"};
+        decoration.AddComponent<Tilemap>();
+        decoration.AddComponent<TilemapRenderer>().sortingOrder = 3;
+        createObjects.Add(decoration);
+        var web = new GameObject {name = "Web"};
+        web.AddComponent<Tilemap>().color = new Color(1,1,1,0.25f);
+        web.AddComponent<TilemapRenderer>().sortingOrder = 4;
+        createObjects.Add(web);
         
-        for (int i = 0; i < _createObjects.Count; i++)
+        foreach (var item in createObjects)
         {
-            _createObjects[i].transform.parent = level.transform;
-            _createObjects[i].AddComponent<Tilemap>();
-            _createObjects[i].AddComponent<TilemapRenderer>();
+            item.transform.parent = _room.transform;
+        }
+
+        foreach (var item in colliderPool)
+        {
+            item.AddComponent<TilemapCollider2D>().usedByComposite = true;
+            item.AddComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            item.AddComponent<CompositeCollider2D>();
         }
         var spawns = new GameObject{name = "Spawns"};
-        spawns.transform.parent = level.transform;
+        spawns.transform.parent = _room.transform;
         var beginMap = new GameObject{name =  "BeginMap"};
-        beginMap.transform.parent = level.transform;
-        var endMap = new GameObject{name =  "EndMap"};
-        endMap.transform.parent = level.transform;
+        beginMap.transform.parent = _room.transform;
     }
 }
